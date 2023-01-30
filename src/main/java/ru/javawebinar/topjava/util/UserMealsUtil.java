@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.util;
 
+import com.sun.istack.internal.NotNull;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.model.UserMealWithExcess;
 
@@ -33,7 +34,7 @@ public class UserMealsUtil {
     public static List<UserMealWithExcess> filteredByCycles(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         Map<LocalDate, Integer> dayCalories = new HashMap<>();
         for (UserMeal userMeal : meals) {
-            if (dayCalories.containsKey(userMeal.getDateTime().toLocalDate())) {
+            if (dayCalories.get(userMeal.getDateTime().toLocalDate()) != null) {
                 dayCalories.replace(userMeal.getDateTime().toLocalDate(), userMeal.getCalories() + dayCalories.get(userMeal.getDateTime().toLocalDate()));
             } else {
                 dayCalories.put(userMeal.getDateTime().toLocalDate(), userMeal.getCalories());
@@ -51,14 +52,14 @@ public class UserMealsUtil {
     }
 
     public static List<UserMealWithExcess> filteredByStreams(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        Map<LocalDate, Integer> dayExceed = meals.stream()
+        Map<LocalDate, Integer> dayCalories = meals.stream()
                 .collect(Collectors.toMap(userMeal -> userMeal.getDateTime().toLocalDate(), UserMeal::getCalories, Integer::sum));
 
         return meals.stream()
                 .filter(userMeal -> userMeal.getDateTime().toLocalTime().isAfter(startTime))
                 .filter(userMeal -> userMeal.getDateTime().toLocalTime().isBefore(endTime))
                 .map(userMeal -> new UserMealWithExcess(userMeal.getDateTime(), userMeal.getDescription(), userMeal.getCalories(),
-                        dayExceed.get(userMeal.getDateTime().toLocalDate()) > caloriesPerDay))
+                        dayCalories.get(userMeal.getDateTime().toLocalDate()) > caloriesPerDay))
                 .collect(Collectors.toList());
     }
 }
