@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava.util;
 
-import com.sun.istack.internal.NotNull;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.model.UserMealWithExcess;
 
