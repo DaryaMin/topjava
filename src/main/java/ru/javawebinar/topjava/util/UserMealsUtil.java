@@ -31,41 +31,34 @@ public class UserMealsUtil {
     }
 
     public static List<UserMealWithExcess> filteredByCycles(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        // TODO return filtered list with excess. Implement by cycles
-
-        Map<LocalDate,Integer> dayExceed = new HashMap<>();
-        for (UserMeal us: meals) {
-            if (dayExceed.containsKey(us.getDateTime().toLocalDate())) {
-                dayExceed.replace(us.getDateTime().toLocalDate(), us.getCalories() + dayExceed.get(us.getDateTime().toLocalDate()));
+        Map<LocalDate, Integer> dayCalories = new HashMap<>();
+        for (UserMeal userMeal : meals) {
+            if (dayCalories.containsKey(userMeal.getDateTime().toLocalDate())) {
+                dayCalories.replace(userMeal.getDateTime().toLocalDate(), userMeal.getCalories() + dayCalories.get(userMeal.getDateTime().toLocalDate()));
+            } else {
+                dayCalories.put(userMeal.getDateTime().toLocalDate(), userMeal.getCalories());
             }
-            else dayExceed.put(us.getDateTime().toLocalDate(), us.getCalories());
         }
 
         List<UserMealWithExcess> userMealWithExcesses = new ArrayList<>();
-        for (UserMeal um:meals) {
-            if (um.getDateTime().toLocalTime().isAfter(startTime) && um.getDateTime().toLocalTime().isBefore(endTime)) {
-                if (dayExceed.get(um.getDateTime().toLocalDate()) > caloriesPerDay) {
-                    userMealWithExcesses.add(new UserMealWithExcess(um.getDateTime(), um.getDescription(), um.getCalories(), true));
-                } else {
-                    userMealWithExcesses.add(new UserMealWithExcess(um.getDateTime(), um.getDescription(), um.getCalories(), false));
-                }
+        for (UserMeal userMeal : meals) {
+            if (userMeal.getDateTime().toLocalTime().isAfter(startTime) && userMeal.getDateTime().toLocalTime().isBefore(endTime)) {
+                userMealWithExcesses.add(new UserMealWithExcess(userMeal.getDateTime(), userMeal.getDescription(),
+                        userMeal.getCalories(), (dayCalories.get(userMeal.getDateTime().toLocalDate()) > caloriesPerDay)));
             }
         }
         return userMealWithExcesses;
     }
 
     public static List<UserMealWithExcess> filteredByStreams(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        // TODO Implement by streams
-        Map<LocalDate,Integer> dayExceed = new HashMap<>();
-        meals.stream().map(userMeal -> dayExceed.put(userMeal.getDateTime().toLocalDate(),
-                                                    dayExceed.containsKey(userMeal.getDateTime().toLocalDate())
-                                                            ? dayExceed.get(userMeal.getDateTime().toLocalDate()) + userMeal.getCalories()
-                                                            : userMeal.getCalories()));
+        Map<LocalDate, Integer> dayExceed = meals.stream()
+                .collect(Collectors.toMap(userMeal -> userMeal.getDateTime().toLocalDate(), UserMeal::getCalories, Integer::sum));
 
-        return meals.stream().filter(n -> n.getDateTime().toLocalTime().isAfter(startTime))
-                             .filter(n -> n.getDateTime().toLocalTime().isBefore(endTime))
-                             .map(userMeal -> new UserMealWithExcess(userMeal.getDateTime(), userMeal.getDescription(), userMeal.getCalories(), dayExceed.get(userMeal.getDateTime().toLocalDate()) > caloriesPerDay))
-                             .collect(Collectors.toList());
-
+        return meals.stream()
+                .filter(userMeal -> userMeal.getDateTime().toLocalTime().isAfter(startTime))
+                .filter(userMeal -> userMeal.getDateTime().toLocalTime().isBefore(endTime))
+                .map(userMeal -> new UserMealWithExcess(userMeal.getDateTime(), userMeal.getDescription(), userMeal.getCalories(),
+                        dayExceed.get(userMeal.getDateTime().toLocalDate()) > caloriesPerDay))
+                .collect(Collectors.toList());
     }
 }
