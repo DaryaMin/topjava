@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="java.time.format.DateTimeFormatter" %>
 
 <html lang="ru">
 <head>
@@ -7,25 +8,23 @@
 </head>
 <body>
 <h3><a href="index.html">Home</a></h3>
-<hr>
 <h2>Meal</h2>
-<table>
-    <caption>Список всех резюме</caption>
+<section>
+    <table border="1">
            <tr>
-               <th>dateTime</th>
-               <th>description</th>
-               <th>calories</th>
-               <th>excess</th>
+               <th>Дата/Время</th>
+               <th>Описание</th>
+               <th>Калории</th>
            </tr>
            <c:forEach items="${mealsTo}" var="mealTo">
-               <jsp:useBean id="mealTo" type="ru.javawebinar.topjava.model.MealTo.java"/>
-               <tr
-                   <td><${mealTo.getDateTime()}</a></td>
-                   <td><${mealTo.getDescription()}></td>
-                   <td><${mealTo.getCalories()}></td>
-                   <td><${mealTo.getExcess()}></td>
+               <jsp:useBean id="mealTo" type="ru.javawebinar.topjava.model.MealTo"/>
+               <tr style="color: ${mealTo.getExcess() ? 'red' : 'green'}">
+                   <td>${mealTo.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))}</td>
+                   <td>${mealTo.getDescription()}</td>
+                   <td>${mealTo.getCalories()}</td>
                </tr>
            </c:forEach>
-</table>
+    </table>
+</section>
 </body>
 </html>
