@@ -10,11 +10,17 @@
 <h3><a href="index.html">Home</a></h3>
 <h2>Meal</h2>
 <section>
+    <button><a href="meals?action=add">
+            <img src="img/add.png" alt="" style="vertical-align:middle">
+            Добавить Запись</a>
+    </button>
     <table border="1">
            <tr>
                <th>Дата/Время</th>
                <th>Описание</th>
                <th>Калории</th>
+               <th>Удалить</th>
+               <th>Редактировать</th>
            </tr>
            <c:forEach items="${mealsTo}" var="mealTo">
                <jsp:useBean id="mealTo" type="ru.javawebinar.topjava.model.MealTo"/>
@@ -22,6 +28,8 @@
                    <td>${mealTo.getDateTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm"))}</td>
                    <td>${mealTo.getDescription()}</td>
                    <td>${mealTo.getCalories()}</td>
+                   <td><a href="meals?id=${mealTo.getId()}&action=delete"><img src="img/delete.png"></a></td>
+                   <td><a href="meals?id=${mealTo.getId()}&action=edit"><img src="img/pencil.png"></a></td>
                </tr>
            </c:forEach>
     </table>
