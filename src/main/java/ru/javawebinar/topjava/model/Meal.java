@@ -7,8 +7,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Meal {
 
-    public static final Meal EMPTY = new Meal();
-
     private Integer id;
 
     private LocalDateTime dateTime;
@@ -34,6 +32,10 @@ public class Meal {
 
     public LocalDateTime getDateTime() {
         return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
     public String getDescription() {

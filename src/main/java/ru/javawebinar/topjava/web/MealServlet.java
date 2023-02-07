@@ -42,7 +42,8 @@ public class MealServlet extends HttpServlet {
                 m = storage.get(Integer.parseInt(id));
                 break;
             case "add":
-                m = Meal.EMPTY;
+                m = MealsUtil.EMPTY;
+                m.setDateTime(LocalDateTime.now());
                 break;
             case "edit":
                 m = storage.get(Integer.parseInt(id));
