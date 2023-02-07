@@ -31,7 +31,7 @@
         <dt>Description</dt>
         <dd><input type="text" name="description" size=55 value="${meal.getDescription()}" required></dd>
         <dt>Calories</dt>
-        <dd><input type="text" name="calories" size=55 value="${meal.getCalories()}" required></dd>
+        <dd><input type="number" name="calories" size=55 value="${meal.getCalories()}" required></dd>
 
         <button type="submit">Сохранить</button>
         <button type="reset" onclick="window.history.back()">Отменить</button>
