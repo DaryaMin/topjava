@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Meal implements Comparable<Meal> {
+public class Meal {
 
     public static final Meal EMPTY = new Meal();
 
@@ -56,9 +56,4 @@ public class Meal implements Comparable<Meal> {
         return id;
     }
 
-    @Override
-    public int compareTo(Meal o) {
-        int cmp = dateTime.compareTo(o.dateTime);
-        return cmp != 0 ? cmp : id.compareTo(o.id);
-    }
 }
