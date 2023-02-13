@@ -34,7 +34,7 @@ public class AdminRestController extends AbstractUserController {
     }
 
     @Override
-    public Object getByMail(String email) {
+    public User getByMail(String email) {
         return super.getByMail(email);
     }
 }

@@ -44,7 +44,7 @@ public abstract class AbstractUserController {
         service.update(user);
     }
 
-    public Object getByMail(String email) {
+    public User getByMail(String email) {
         log.info("getByEmail {}", email);
         return service.getByEmail(email);
     }
