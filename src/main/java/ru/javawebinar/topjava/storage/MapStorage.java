@@ -20,8 +20,15 @@ public class MapStorage extends AbstractStorage<Integer> {
 
     }
 
+    public Integer id = storage.keySet().stream().reduce(Integer::max).get();
+
+
     @Override
     protected Integer getSearchKey(Integer id) {
+        return id;
+    }
+
+    protected Integer getId() {
         return id;
     }
 
