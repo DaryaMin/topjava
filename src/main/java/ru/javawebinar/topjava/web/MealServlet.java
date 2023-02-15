@@ -33,7 +33,7 @@ public class MealServlet extends HttpServlet {
         String userId = request.getParameter("userId");
 
         Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
-                userId.isEmpty() ? null : Integer.valueOf(userId),
+                userId.isEmpty() ? null : Integer.parseInt(userId),
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
