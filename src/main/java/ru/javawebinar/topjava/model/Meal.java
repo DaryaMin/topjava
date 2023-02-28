@@ -1,19 +1,46 @@
 package ru.javawebinar.topjava.model;
 
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import org.hibernate.validator.constraints.Range;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-
+@NamedQueries({
+        @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id and m.user.id=:userId"),
+        @NamedQuery(name = Meal.ALL, query = "SELECT m FROM Meal m WHERE m.user.id=:userId ORDER BY m.dateTime DESC"),
+        @NamedQuery(name = Meal.BETWEEN, query = "SELECT m FROM Meal m WHERE m.user.id=:userId AND m.dateTime>:startTime " +
+                "AND m.dateTime<:endTime ORDER BY m.dateTime DESC"),
+        @NamedQuery(name = Meal.UPDATE, query = "UPDATE Meal m SET m.dateTime=:dateTime, m.description=:description, " +
+                "m.calories=:calories WHERE m.user.id=:userId "),
+})
+@Entity
+@Table(name = "meal")
 public class Meal extends AbstractBaseEntity {
+    public static final String DELETE = "Meal.delete";
+    public static final String ALL = "Meal.getAll";
+    public static final String BETWEEN = "Meal.getBetweenHalfOpen";
+    public static final String UPDATE = "Meal.save";
+
+    @Column(name = "date_time", nullable = false)
+    @NotNull
     private LocalDateTime dateTime;
 
+    @Column(name = "description", nullable = false)
+    @NotNull
+    @Size(max = 128)
     private String description;
 
+    @Column(name = "calories", nullable = false)
+    @NotNull
+    @Range(min = 1, max = 10000)
     private int calories;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="user_id")
     private User user;
 
     public Meal() {
