@@ -6,10 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.service.UserService;
-import ru.javawebinar.topjava.util.Util;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,36 +21,26 @@ public class JpaMealRepository implements MealRepository {
     @PersistenceContext
     private EntityManager em;
 
-    @Autowired
-    private UserService service;
-
     @Override
     @Transactional
     public Meal save(Meal meal, int userId) {
+        User ref = em.getReference(User.class, userId);
         if (meal.isNew()) {
-            meal.setUser(service.get(userId));
+            meal.setUser(ref);
             em.persist(meal);
             return meal;
         } else {
-            if (get(meal.getId(), userId) != null)
-            meal.setUser(service.get(userId));
+            if (get(meal.getId(), userId) != null) {
+                meal.setUser(ref);
                 return em.merge(meal);
             }
-
+        }
+        return checkNotFoundWithId(null, userId);
     }
 
     @Override
     @Transactional
     public boolean delete(int id, int userId) {
-//        Meal ref = em.getReference(Meal.class, id);
-//        if (ref.getUser().getId().equals(userId)) {
-//            em.remove(ref);
-//            return true;
-//        }
-
-
-
-
         return em.createNamedQuery(Meal.DELETE)
                 .setParameter("id", id)
                 .setParameter("userId", userId)
@@ -63,10 +50,11 @@ public class JpaMealRepository implements MealRepository {
     @Override
     public Meal get(int id, int userId) {
         Meal meal = em.find(Meal.class, id);
-        if (meal.getUser().getId().equals(userId)) {
+
+        if (meal != null && meal.getUser().getId().equals(userId)) {
             return meal;
         }
-        return null;
+        return checkNotFoundWithId(null, userId);
     }
 
     @Override
