@@ -13,10 +13,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping(value = MealRestController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class MealRestController extends AbstractMealController {
     static final String REST_URL = "/rest/meals";
+
 
     @GetMapping("/{id}")
     public Meal get(@PathVariable int id) {
@@ -28,7 +29,7 @@ public class MealRestController extends AbstractMealController {
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@RequestParam Integer id) {
+    public void delete(@RequestParam int id) {
         super.delete(id);
     }
 
@@ -38,7 +39,7 @@ public class MealRestController extends AbstractMealController {
         return super.create(meal);
     }
 
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@RequestBody Meal meal, @PathVariable int id) {
         super.update(meal, id);
