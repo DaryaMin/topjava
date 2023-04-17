@@ -6,12 +6,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.javawebinar.topjava.View;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.model.User;
 
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static ru.javawebinar.topjava.MealTestData.*;
+import static ru.javawebinar.topjava.UserTestData.jsonWithPassword;
+import static ru.javawebinar.topjava.UserTestData.user;
 
 class JsonUtilTest {
     private static final Logger log = LoggerFactory.getLogger(JsonUtilTest.class);
@@ -38,5 +43,16 @@ class JsonUtilTest {
         String json = JsonUtil.writeValue(adminMeal1, uiWriter);
         System.out.println(json);
         assertThat(json, containsString("dateTimeUI"));
+    }
+
+    @Test
+    void writeOnlyAccess() {
+        String json = JsonUtil.writeValue(user);
+        System.out.println(json);
+        assertThat(json, not(containsString("password")));
+        String jsonWithPass = jsonWithPassword(user, "newPass");
+        System.out.println(jsonWithPass);
+        User user = JsonUtil.readValue(jsonWithPass, User.class);
+        assertEquals(user.getPassword(), "newPass");
     }
 }
